@@ -21,7 +21,7 @@ class Main{
             .then(App.bindStaticMiddleware.bind(App))
             .then(App.bindAppParsingMiddleware.bind(App))
             .then(App.bindApplicationMiddleware.bind(App))
-            .then(App.bindErrorMiddleware.bind(App));
+            .then(App.bindErrorMiddleware.bind(App)); 
     }
 
     constructor(){
