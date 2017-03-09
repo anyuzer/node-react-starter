@@ -1,0 +1,23 @@
+exports[`Box Component should match the Box component snapshot 1`] = `
+<div
+  className="_2vul0"
+  onClick={[Function]}>
+  Hello World
+</div>
+`;
+
+exports[`Box Component should match the Box component snapshot 2`] = `
+<div
+  className="_2vul0"
+  onClick={[Function]}>
+  Goodbye World
+</div>
+`;
+
+exports[`Box Component should match the Box component snapshot 3`] = `
+<div
+  className="_2vul0"
+  onClick={[Function]}>
+  Hello World
+</div>
+`;

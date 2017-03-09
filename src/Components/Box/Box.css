@@ -1,0 +1,10 @@
+.box{
+    position: relative;
+    box-sizing: border-box;
+    width: 400px;
+    height: 200px;
+    border: 2px solid navy;
+    border-radius: 4px;
+    text-align:center;
+    line-height: 200px;
+}
