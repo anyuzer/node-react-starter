@@ -8,3 +8,4 @@ dist
 *.map
 coverage
 certs/
+server.bundle.js
