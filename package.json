@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.bundle.js",
     "test": "jest --coverage",
-    "lint": "eslint src/",
+    "lint": "eslint src --ext .js --config .eslintrc",
+    "lint-fix": "npm run lint -- --fix",
     "build": "npm run build-client && npm run build-server",
     "build-client": "./node_modules/.bin/webpack -p --bail --config=\"webpack.clients.js\"",
     "build-server": "./node_modules/.bin/webpack -p --bail --config=\"webpack.server.js\"",
@@ -18,7 +19,7 @@
   "author": "Ian Reid",
   "license": "ISC",
   "dependencies": {
-    "arc-lib": "^1.4.0",
+    "arc-lib": "^2.1.0",
     "babel-core": "^6.21.0",
     "babel-jest": "^18.0.0",
     "babel-loader": "^6.2.10",
@@ -38,6 +39,7 @@
     "webpack": "^1.14.0"
   },
   "devDependencies": {
+    "cz-conventional-changelog": "^2.0.0",
     "eslint": "^3.14.1",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-import": "^2.2.0",
@@ -67,5 +69,10 @@
     "testPathIgnorePatterns": [
       "/__mocks__/"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

@@ -6,231 +6,231 @@ import { ArcObject } from 'arc-lib';
 NOTE: We do not test spaces that we do not own. Adapters are excluded from testing.
 Adapters abstract and wrap ownership spaces we don't own. They allow our app to use concepts required by the app without tightly coupling to the underlying functionality.
  */
-class HTTPClient{
-    static get TYPE_JSON(){
-        return 0;
-    }
+class HTTPClient {
+  static get TYPE_JSON() {
+    return 0;
+  }
 
-    static get TYPE_FORM(){
-        return 1;
-    }
+  static get TYPE_FORM() {
+    return 1;
+  }
 
-    constructor(){
-        this.hostname = 'localhost';
-        this.port = 80;
-        this.path = '/';
-        this.headers = new ArcObject();
+  constructor() {
+    this.hostname = 'localhost';
+    this.port = 80;
+    this.path = '/';
+    this.headers = new ArcObject();
 
-        this.family = undefined;
-        this.localAddress = undefined;
-        this.socketPath = undefined;
-        this.auth = undefined;
-        this.timeout = undefined;
-        this.transferType = HTTPClient.TYPE_JSON;
-    }
+    this.family = undefined;
+    this.localAddress = undefined;
+    this.socketPath = undefined;
+    this.auth = undefined;
+    this.timeout = undefined;
+    this.transferType = HTTPClient.TYPE_JSON;
+  }
 
     // Setters
-    setTransferType(_transferType){
-        this.transferType = _transferType;
-    }
+  setTransferType(_transferType) {
+    this.transferType = _transferType;
+  }
 
-    setHostname(_host){
-        this.hostname = _host;
-    }
+  setHostname(_host) {
+    this.hostname = _host;
+  }
 
-    setFamily(_family){
-        this.family = _family;
-    }
+  setFamily(_family) {
+    this.family = _family;
+  }
 
-    setPort(_port){
-        this.port = _port;
-    }
+  setPort(_port) {
+    this.port = _port;
+  }
 
-    setLocalAddress(_localAddress){
-        this.localAddress = _localAddress;
-    }
+  setLocalAddress(_localAddress) {
+    this.localAddress = _localAddress;
+  }
 
-    setSocketPath(_socketPath){
-        this.socketPath = _socketPath;
-    }
+  setSocketPath(_socketPath) {
+    this.socketPath = _socketPath;
+  }
 
-    setMethod(_method){
-        this.method = _method;
-    }
+  setMethod(_method) {
+    this.method = _method;
+  }
 
-    setPath(_path){
-        this.path = _path;
-    }
+  setPath(_path) {
+    this.path = _path;
+  }
 
-    setHeader(_key, _val){
-        this.headers[_key] = _val;
-    }
+  setHeader(_key, _val) {
+    this.headers[_key] = _val;
+  }
 
-    setAuth(_auth){
-        this.auth = _auth;
-    }
+  setAuth(_auth) {
+    this.auth = _auth;
+  }
 
-    setTimeout(_timeout){
-        this.timeout = _timeout;
-    }
+  setTimeout(_timeout) {
+    this.timeout = _timeout;
+  }
 
-    setReturnStream(){
+  setReturnStream() {
         // TODO: this. We can support streams easily, but there is no pressing need or current active use case.
-    }
+  }
 
     // Consumers
-    getRemote(){
-        return new Promise(this._performGETRequest.bind(this));
-    }
+  getRemote() {
+    return new Promise(this._performGETRequest.bind(this));
+  }
 
-    headRemote(){
-        return new Promise(this._performHEADRequest.bind(this));
-    }
+  headRemote() {
+    return new Promise(this._performHEADRequest.bind(this));
+  }
 
-    postRemote(_postData){
-        return new Promise((_resolve, _reject) => {
-            this._performPOSTRequest(_resolve, _reject, _postData);
-        });
-    }
+  postRemote(_postData) {
+    return new Promise((_resolve, _reject) => {
+      this._performPOSTRequest(_resolve, _reject, _postData);
+    });
+  }
 
-    putRemote(_putData){
-        return new Promise((_resolve, _reject) => {
-            this._performPUTRequest(_resolve, _reject, _putData);
-        });
-    }
+  putRemote(_putData) {
+    return new Promise((_resolve, _reject) => {
+      this._performPUTRequest(_resolve, _reject, _putData);
+    });
+  }
 
-    patchRemote(_patchData){
-        return new Promise((_resolve, _reject) => {
-            this._performPATCHRequest(_resolve, _reject, _patchData);
-        });
-    }
+  patchRemote(_patchData) {
+    return new Promise((_resolve, _reject) => {
+      this._performPATCHRequest(_resolve, _reject, _patchData);
+    });
+  }
 
-    deleteRemote(){
-        return new Promise(this._performDELETERequest.bind(this));
-    }
+  deleteRemote() {
+    return new Promise(this._performDELETERequest.bind(this));
+  }
 
     // Private
-    _performHEADRequest(_resolve, _reject){
-        const options = this._buildOptions();
-        options.method = 'HEAD';
+  _performHEADRequest(_resolve, _reject) {
+    const options = this._buildOptions();
+    options.method = 'HEAD';
 
-        this._callRemote(_resolve, _reject, options);
+    this._callRemote(_resolve, _reject, options);
+  }
+
+  _performGETRequest(_resolve, _reject) {
+    const options = this._buildOptions();
+    options.method = 'GET';
+
+    this._callRemote(_resolve, _reject, options);
+  }
+
+  _performPOSTRequest(_resolve, _reject, _postData) {
+    const options = this._buildOptions();
+    options.method = 'POST';
+
+    const [encodedStr, contentType, contentLength] = this._encodeObj(_postData);
+    options.headers['Content-Type'] = contentType;
+    options.headers['Content-Length'] = contentLength;
+
+    this._callRemote(_resolve, _reject, options, encodedStr);
+  }
+
+  _performPATCHRequest(_resolve, _reject, _patchData) {
+    const options = this._buildOptions();
+    options.method = 'PATCH';
+
+    const [encodedStr, contentType, contentLength] = this._encodeObj(_patchData);
+    options.headers['Content-Type'] = contentType;
+    options.headers['Content-Length'] = contentLength;
+
+    this._callRemote(_resolve, _reject, options, encodedStr);
+  }
+
+  _performPUTRequest(_resolve, _reject, _putData) {
+    const options = this._buildOptions();
+    options.method = 'PUT';
+
+    const [encodedStr, contentType, contentLength] = this._encodeObj(_putData);
+    options.headers['Content-Type'] = contentType;
+    options.headers['Content-Length'] = contentLength;
+
+    this._callRemote(_resolve, _reject, options, encodedStr);
+  }
+
+  _performDELETERequest(_resolve, _reject) {
+    const options = this._buildOptions();
+    options.method = 'DELETE';
+    this._callRemote(_resolve, _reject, options);
+  }
+
+  _buildOptions() {
+    const options = {};
+    options.hostname = this.hostname;
+    options.port = this.port;
+    options.method = this.method;
+    options.path = this.path;
+    options.headers = (this.headers.count() ? this.headers : {});
+    if (this.family !== undefined) {
+      options.family = this.family;
     }
-    
-    _performGETRequest(_resolve, _reject){
-        const options = this._buildOptions();
-        options.method = 'GET';
-
-        this._callRemote(_resolve, _reject, options);
+    if (this.localAddress !== undefined) {
+      options.localAddress = this.localAddress;
     }
-    
-    _performPOSTRequest(_resolve, _reject, _postData){
-        const options = this._buildOptions();
-        options.method = 'POST';
-
-        const [encodedStr, contentType, contentLength] = this._encodeObj(_postData);
-        options.headers['Content-Type'] = contentType;
-        options.headers['Content-Length'] = contentLength;
-
-        this._callRemote(_resolve, _reject, options, encodedStr);
+    if (this.socketPath !== undefined) {
+      options.socketPath = this.socketPath;
     }
-    
-    _performPATCHRequest(_resolve, _reject, _patchData){
-        const options = this._buildOptions();
-        options.method = 'PATCH';
-
-        const [encodedStr, contentType, contentLength] = this._encodeObj(_patchData);
-        options.headers['Content-Type'] = contentType;
-        options.headers['Content-Length'] = contentLength;
-
-        this._callRemote(_resolve, _reject, options, encodedStr);
+    if (this.auth !== undefined) {
+      options.auth = this.auth;
     }
-
-    _performPUTRequest(_resolve, _reject, _putData){
-        const options = this._buildOptions();
-        options.method = 'PUT';
-
-        const [encodedStr, contentType, contentLength] = this._encodeObj(_putData);
-        options.headers['Content-Type'] = contentType;
-        options.headers['Content-Length'] = contentLength;
-
-        this._callRemote(_resolve, _reject, options, encodedStr);
+    if (this.timeout !== undefined) {
+      options.timeout = this.timeout;
     }
-    
-    _performDELETERequest(_resolve, _reject){
-        const options = this._buildOptions();
-        options.method = 'DELETE';
-        this._callRemote(_resolve, _reject, options);
-    }
-    
-    _buildOptions(){
-        const options = {};
-        options.hostname = this.hostname;
-        options.port = this.port;
-        options.method = this.method;
-        options.path = this.path;
-        options.headers = (this.headers.count() ? this.headers : {});
-        if (this.family !== undefined){
-            options.family = this.family;
-        }
-        if (this.localAddress !== undefined){
-            options.localAddress = this.localAddress;
-        }
-        if (this.socketPath !== undefined){
-            options.socketPath = this.socketPath;
-        }
-        if (this.auth !== undefined){
-            options.auth = this.auth;
-        }
-        if (this.timeout !== undefined){
-            options.timeout = this.timeout;
-        }
-        return options;
-    }
+    return options;
+  }
 
     // We are going to assume a safe request (therefore a trusted/safe response)
-    _callRemote(_resolve, _reject, _options, _body){
-        const request = HTTP.request(_options, (_response) => {
-            this._handleRequestLifeCycle(_response, _resolve, _reject);
-        });
-        request.on('error', _reject);
-        if (_body !== undefined){
-            request.write(_body);
-        }
-        request.end();
+  _callRemote(_resolve, _reject, _options, _body) {
+    const request = HTTP.request(_options, (_response) => {
+      this._handleRequestLifeCycle(_response, _resolve, _reject);
+    });
+    request.on('error', _reject);
+    if (_body !== undefined) {
+      request.write(_body);
+    }
+    request.end();
+  }
+
+  _handleRequestLifeCycle(_response, _resolve, _reject) {
+    if (_response.statusCode < 200 || _response.statusCode >= 300) {
+      _reject([_response.statusCode, _response.headers]);
     }
 
-    _handleRequestLifeCycle(_response, _resolve, _reject){
-        if (_response.statusCode < 200 || _response.statusCode >= 300){
-            _reject([_response.statusCode, _response.headers]);
-        }
+    let body = '';
+    _response.on('data', (_chunk) => {
+      body += _chunk;
+    });
 
-        let body = '';
-        _response.on('data', (_chunk) => {
-            body += _chunk;
-        });
+    _response.on('end', () => {
+      _resolve([_response.statusCode, _response.headers, body]);
+    });
+  }
 
-        _response.on('end', () => {
-            _resolve([_response.statusCode, _response.headers, body]);
-        });
+  _encodeObj(_obj) {
+    if (this.transferType === HTTPClient.TYPE_FORM) {
+      return this._translateObjectToFormEncoded(_obj);
     }
+    return this._translateObjecToJSONEncoded(_obj);
+  }
 
-    _encodeObj(_obj){
-        if (this.transferType === HTTPClient.TYPE_FORM){
-            return this._translateObjectToFormEncoded(_obj);
-        }
-        return this._translateObjecToJSONEncoded(_obj);
-    }
+  _translateObjectToFormEncoded(_obj) {
+    const encodedStr = queryString.stringify(_obj || {});
+    return [encodedStr, 'application/x-www-form-urlencoded', Buffer.byteLength(encodedStr)];
+  }
 
-    _translateObjectToFormEncoded(_obj){
-        const encodedStr = queryString.stringify(_obj || {});
-        return [encodedStr, 'application/x-www-form-urlencoded', Buffer.byteLength(encodedStr)];
-    }
-
-    _translateObjecToJSONEncoded(_obj){
-        const encodedStr = JSON.stringify((_obj || {}));
-        return [encodedStr, 'application/json', Buffer.byteLength(encodedStr)];
-    }
+  _translateObjecToJSONEncoded(_obj) {
+    const encodedStr = JSON.stringify((_obj || {}));
+    return [encodedStr, 'application/json', Buffer.byteLength(encodedStr)];
+  }
 }
 
 export default HTTPClient;
