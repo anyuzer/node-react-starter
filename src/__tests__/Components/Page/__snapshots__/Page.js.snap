@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`Page Component should match the Page component snapshot 1`] = `
 <html
   lang="en">

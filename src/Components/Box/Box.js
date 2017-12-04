@@ -1,5 +1,5 @@
 import React from 'react';
-import './Box.css';
+import styles from './styles';
 
 class Box extends React.Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class Box extends React.Component {
 
   render() {
     return (
-      <div styleName="box" onClick={this.updateMessage.bind(this)}>
+      <div style={styles.box} onClick={this.updateMessage.bind(this)}>
         {this.state.message}
       </div>
     );

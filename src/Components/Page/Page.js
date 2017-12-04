@@ -55,16 +55,4 @@ class Page extends React.Component {
   }
 }
 
-Page.defaultProps = {
-  app: {},
-  content: "",
-  title: ""
-};
-
-Page.propTypes = {
-  app: React.PropTypes.object,
-  content: React.PropTypes.string,
-  title: React.PropTypes.string
-};
-
 export default Page;

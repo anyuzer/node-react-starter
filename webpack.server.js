@@ -22,12 +22,6 @@ module.exports = {
                 loaders:['babel']
             },
             {
-                test: /\.css$/,
-                loaders: [
-                    'css?modules&importLoaders=1&localIdentName=[hash:base64:5]'
-                ]
-            },
-            {
                 test: /\.png$/,
                 loader: "url-loader?limit=100000"
             },
