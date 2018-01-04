@@ -2,7 +2,8 @@
 
 exports[`Page Component should match the Page component snapshot 1`] = `
 <html
-  lang="en">
+  lang="en"
+>
   <head>
     <title>
       
@@ -10,16 +11,18 @@ exports[`Page Component should match the Page component snapshot 1`] = `
     <link
       href="app/app.css"
       rel="stylesheet"
-      type="text/css" />
+      type="text/css"
+    />
     <script
       dangerouslySetInnerHTML={
         Object {
           "__html": "
-                    window.app = {};
-                ",
+            window.app = {};
+        ",
         }
       }
-      type="text/javascript" />
+      type="text/javascript"
+    />
   </head>
   <body>
     <div
@@ -28,9 +31,11 @@ exports[`Page Component should match the Page component snapshot 1`] = `
           "__html": "test",
         }
       }
-      id="app-mount" />
+      id="app-mount"
+    />
     <script
-      src="/app/app.bundle.js" />
+      src="/app/app.bundle.js"
+    />
   </body>
 </html>
 `;

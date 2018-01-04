@@ -14,7 +14,8 @@ exports[`Box Component should match the Box component snapshot 1`] = `
       "textAlign": "center",
       "width": "400px",
     }
-  }>
+  }
+>
   Hello World
 </div>
 `;
@@ -33,7 +34,8 @@ exports[`Box Component should match the Box component snapshot 2`] = `
       "textAlign": "center",
       "width": "400px",
     }
-  }>
+  }
+>
   Goodbye World
 </div>
 `;
@@ -52,7 +54,8 @@ exports[`Box Component should match the Box component snapshot 3`] = `
       "textAlign": "center",
       "width": "400px",
     }
-  }>
+  }
+>
   Hello World
 </div>
 `;
