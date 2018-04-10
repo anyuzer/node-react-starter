@@ -1,102 +1,86 @@
 /* eslint no-console: 0 */
 /* Disable ESLint no-console as this file only runs on server side */
 import BodyParser from 'body-parser';
-import Express from 'express';
+import Koa from 'koa';
+import compress from 'koa-compress';
 
-import HTTP from 'http';
+import http2 from 'http2';
 import Controllers from './Controllers/Controllers';
 import Config from './Config/Config';
+import KoaStatic from './Middleware/KoaStatic';
+import KoaRouter from './Middleware/KoaRouter';
 
 /*
 NOTE: We do not write tests against our Main. Main is our application entry, and builds out our application.
  */
 class Main {
-  static Run() {
+    static Run() {
         // Our application
-    const App = new Main();
+        const App = new Main();
+        App.bindSecurityMiddleware()
+        .then(App.bindAuthMiddleware.bind(App))
+        .then(App.bindStaticMiddleware.bind(App))
+        .then(App.bindAppParsingMiddleware.bind(App))
+        .then(App.bindApplicationMiddleware.bind(App))
+        .then(App.bindErrorMiddleware.bind(App))
+        .then(App.startServer.bind(App));
+    }
 
-        // Middlware is order specific. In this case, we use a promise chain to allow setup to be appropriate async
-    App.bindSecurityMiddleware()
-            .then(App.bindAuthMiddleware.bind(App))
-            .then(App.bindStaticMiddleware.bind(App))
-            .then(App.bindAppParsingMiddleware.bind(App))
-            .then(App.bindApplicationMiddleware.bind(App))
-            .then(App.bindErrorMiddleware.bind(App))
-            .then(App.startServer.bind(App))
-            .catch((e) => {
-              console.log(e);
-            });
-  }
+    constructor() {
+        this.app = new Koa();
+        this.app.use(compress());
+        this.Router = new KoaRouter;
+        this.StaticServer = new KoaStatic;
 
-  constructor() {
-    this.express = new Express();
-    this.express.disable('x-powered-by');
+        console.log(`Application started with ${Config.getEnvironment()} config`);
+    }
 
-    console.log(`Application started with ${Config.getEnvironment()} config`);
-    this.Server = HTTP.createServer(this.express);
-  }
-
-  bindSecurityMiddleware() {
+    bindSecurityMiddleware() {
         // If I need to handle any top level security concerns. For example, not having http enabled, but catching non TLS requests and redirecting to the correct SecureServer
-    console.log('Security middleware bound...');
-    return Promise.resolve(true);
-  }
+        console.log('Security middleware bound...');
+        return Promise.resolve(true);
+    }
 
-  bindAuthMiddleware() {
+    bindAuthMiddleware() {
         // I do sessionID, authentication and cookie management
-    console.log('Auth middleware bound...');
-    return Promise.resolve(true);
-  }
+        console.log('Auth middleware bound...');
+        return Promise.resolve(true);
+    }
 
-  bindStaticMiddleware() {
-        // I am a static fileserver. I can be below our dynamic requests, as a fallout scenario (lets me overwrite static content with dynamic controllers) or above (check static first)
-    this.express.use(Express.static(global.DIST_PATH));
-    console.log('Static middleware bound...');
-    return Promise.resolve(true);
-  }
+    bindStaticMiddleware() {
+        console.log('Static middleware bound...');
+        this.StaticServer.addRoute('/assets/**path[/]');
+        this.app.use(this.StaticServer.intercept);
+        return Promise.resolve(true);
+    }
 
-  bindAppParsingMiddleware() {
-        // In the case of request transformation prior to the application
-    this.express.use(BodyParser.json());
-    this.express.use(BodyParser.urlencoded({ extended: true }));
+    bindAppParsingMiddleware() {
+        console.log('Parsing middleware bound...');
+        return Promise.resolve(true);
+    }
 
-    console.log('Parsing middleware bound...');
-    return Promise.resolve(true);
-  }
+    bindApplicationMiddleware() {
+        const Controller = new Controllers();
+        this.Router.all('/', Controller.getRouter());
+        this.app.use(this.Router.intercept);
+        console.log('Application middleware bound...');
+        return Promise.resolve(true);
+    }
 
-  bindApplicationMiddleware() {
-    const Controller = new Controllers();
-    this.express.use('/', Controller.getRouter());
-    console.log('Application middleware bound...');
-    return Promise.resolve(true);
-  }
+    bindErrorMiddleware() {
+        console.log('Error middleware bound...');
+        return Promise.resolve(true);
+    }
 
-  bindErrorMiddleware() {
-    // Some low generics
-    this.express.use(this._generic404Handler);
-    this.express.use(this._generic500Handler);
-    console.log('Error middleware bound...');
-    return Promise.resolve(true);
-  }
+    startServer() {
+        this.Server = http2.createSecureServer(Config.getCertConfig(), this.app.callback());
+        this.Server.listen(Config.getHTTPSConfig().port);
+        console.log(`Started on port ${Config.getHTTPSConfig().port}`);
+    }
 
-  startServer() {
-    this.Server.listen(Config.getHTTPConfig().port, Config.getHTTPConfig().host);
-    console.log(`Started on port ${Config.getHTTPConfig().port}`);
-  }
-
-
-  _generic404Handler(_request, _response, _next) {
-    _response.status(404).end("Could not resolve API: Not Found");
-  }
-
-  _generic500Handler(_error, _request, _response, _next) {
-    console.log(_error.stack);
-    _response.status(500).end(`${_error.message} - Could not resolve API: Error`);
-  }
-
-  toString() {
-    return `[object ${this.constructor.name}]`;
-  }
+    toString() {
+        return `[object ${this.constructor.name}]`;
+    }
 }
 
 export default Main;

@@ -1,2 +1,4 @@
 dist/*.js
 server.bundle.js
+__tests__/
+__mocks__/

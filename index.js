@@ -1,8 +1,10 @@
-//Our globals
-import Main from './src/Main';
+import path from 'path';
 
-global.APP_PATH = require('path').resolve(__dirname+"/src")
-global.TLS_PATH = require('path').resolve(__dirname+"/tls");
-global.DIST_PATH = require('path').resolve(__dirname+"/dist");
+global.APP_PATH = path.resolve(`${__dirname}/src`);
+global.TLS_PATH = path.resolve(`${__dirname}/tls`);
+global.DIST_PATH = path.resolve(`${__dirname}/dist`);
+
+/* eslint import/first: 0 */
+import Main from './src/Main';
 
 Main.Run();

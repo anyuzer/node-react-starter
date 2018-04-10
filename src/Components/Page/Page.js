@@ -9,50 +9,49 @@ Having a Page as a component is nice, as it maintains coding sensibility and con
     -props.content is a react rendered output. This is the same content that is rendered by our AppClient and attached to the app-mount element
  */
 class Page extends React.Component {
-  getAppData() {
-    return JSON.stringify(this.props.app);
-  }
+    getAppData() {
+        return JSON.stringify(this.props.app);
+    }
 
-  getInitData() {
-    return `
+    getInitData() {
+        return `
             window.app = ${this.getAppData()};
         `;
-  }
+    }
 
-  getInitScript() {
-    return {
-      type: "text/javascript",
-      dangerouslySetInnerHTML: {
-        __html: this.getInitData()
-      }
-    };
-  }
+    getInitScript() {
+        return {
+            type: "text/javascript",
+            dangerouslySetInnerHTML: {
+                __html: this.getInitData()
+            }
+        };
+    }
 
-  getAppMount() {
-    return {
-      id: "app-mount",
-      dangerouslySetInnerHTML: {
-        __html: this.props.content
-      }
-    };
-  }
+    getAppMount() {
+        return {
+            id: "app-mount",
+            dangerouslySetInnerHTML: {
+                __html: this.props.content
+            }
+        };
+    }
 
-  render() {
+    render() {
         // We would not want to do this in the client bundle but as we're using React for the Page shell, this is safe
-    return (
-      <html lang="en">
-        <head>
-          <title>{this.props.title}</title>
-          <link href="app/app.css" rel="stylesheet" type="text/css" />
-          <script {...this.getInitScript()} />
-        </head>
-        <body>
-          <div {...this.getAppMount()} />
-          <script src="/app/app.bundle.js" />
-        </body>
-      </html>
-    );
-  }
+        return (
+          <html lang="en">
+            <head>
+              <title>{this.props.title}</title>
+              <script {...this.getInitScript()} />
+            </head>
+            <body>
+              <div {...this.getAppMount()} />
+              <script src="/assets/app/app.bundle.js" />
+            </body>
+          </html>
+        );
+    }
 }
 
 export default Page;

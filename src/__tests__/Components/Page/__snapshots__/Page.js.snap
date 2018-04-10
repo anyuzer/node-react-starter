@@ -8,11 +8,6 @@ exports[`Page Component should match the Page component snapshot 1`] = `
     <title>
       
     </title>
-    <link
-      href="app/app.css"
-      rel="stylesheet"
-      type="text/css"
-    />
     <script
       dangerouslySetInnerHTML={
         Object {
@@ -34,7 +29,7 @@ exports[`Page Component should match the Page component snapshot 1`] = `
       id="app-mount"
     />
     <script
-      src="/app/app.bundle.js"
+      src="/assets/app/app.bundle.js"
     />
   </body>
 </html>

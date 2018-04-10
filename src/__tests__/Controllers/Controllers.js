@@ -1,5 +1,4 @@
-import { Router } from 'express';
-import { ArcObject } from 'arc-lib';
+import KoaRouter from '../../Middleware/KoaRouter';
 import Controllers from '../../Controllers/Controllers';
 
 describe('Controllers Class', () => {
@@ -9,7 +8,6 @@ describe('Controllers Class', () => {
   });
 
   it('should return an object that has the same API as express.Router', () => {
-    const ExampleRouter = new Router;
-    expect(ArcObject.duckType(ExampleRouter, TestControllers.getRouter())).toBe(true);
+    expect(TestControllers.getRouter()).toBeInstanceOf(KoaRouter);
   });
 });
