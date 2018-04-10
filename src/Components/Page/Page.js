@@ -1,4 +1,5 @@
 import React from 'react';
+import Box from '../Box';
 
 /*
 Having a Page as a component is nice, as it maintains coding sensibility and consistency but there are a few key differences to be aware of when doing this
@@ -30,10 +31,7 @@ class Page extends React.Component {
 
     getAppMount() {
         return {
-            id: "app-mount",
-            dangerouslySetInnerHTML: {
-                __html: this.props.content
-            }
+            id: "app-mount"
         };
     }
 
@@ -46,7 +44,9 @@ class Page extends React.Component {
               <script {...this.getInitScript()} />
             </head>
             <body>
-              <div {...this.getAppMount()} />
+              <div {...this.getAppMount()}>
+                <Box />
+              </div>
               <script src="/assets/app/app.bundle.js" />
             </body>
           </html>

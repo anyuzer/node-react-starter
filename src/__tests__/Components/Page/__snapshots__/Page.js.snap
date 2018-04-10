@@ -21,13 +21,26 @@ exports[`Page Component should match the Page component snapshot 1`] = `
   </head>
   <body>
     <div
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "test",
-        }
-      }
       id="app-mount"
-    />
+    >
+      <div
+        onClick={[Function]}
+        style={
+          Object {
+            "border": "2px solid navy",
+            "borderRadius": "4px",
+            "boxSizing": "borderBox",
+            "height": "200px",
+            "lineHeight": "200px",
+            "position": "relative",
+            "textAlign": "center",
+            "width": "400px",
+          }
+        }
+      >
+        Hello World
+      </div>
+    </div>
     <script
       src="/assets/app/app.bundle.js"
     />

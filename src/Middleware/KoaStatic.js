@@ -28,9 +28,9 @@ class KoaStatic {
                     if (_err) {
                         _resolve(_next());
                     }
-                    fs.stat(fullPath, (_err, _stats)=>{
+                    fs.stat(fullPath, (_suberr, _stats) => {
                         const etag = ArcHash.md5(`${_stats.size}${_stats.mtimeMs}`);
-                        if(_ctx.request.headers['if-none-match'] === etag){
+                        if (_ctx.request.headers['if-none-match'] === etag) {
                             _ctx.response.status = 304;
                             return _resolve();
                         }

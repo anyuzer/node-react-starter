@@ -1,6 +1,5 @@
 /* eslint no-console: 0 */
 /* Disable ESLint no-console as this file only runs on server side */
-import BodyParser from 'body-parser';
 import Koa from 'koa';
 import compress from 'koa-compress';
 
