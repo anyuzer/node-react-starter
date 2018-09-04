@@ -3,7 +3,7 @@
 import Koa from 'koa';
 import compress from 'koa-compress';
 
-import http2 from 'http2';
+import http from 'http';
 import Controllers from './Controllers/Controllers';
 import Config from './Config/Config';
 import KoaStatic from './Middleware/KoaStatic';
@@ -17,12 +17,12 @@ class Main {
         // Our application
         const App = new Main();
         App.bindSecurityMiddleware()
-        .then(App.bindAuthMiddleware.bind(App))
-        .then(App.bindStaticMiddleware.bind(App))
-        .then(App.bindAppParsingMiddleware.bind(App))
-        .then(App.bindApplicationMiddleware.bind(App))
-        .then(App.bindErrorMiddleware.bind(App))
-        .then(App.startServer.bind(App));
+            .then(App.bindAuthMiddleware.bind(App))
+            .then(App.bindStaticMiddleware.bind(App))
+            .then(App.bindAppParsingMiddleware.bind(App))
+            .then(App.bindApplicationMiddleware.bind(App))
+            .then(App.bindErrorMiddleware.bind(App))
+            .then(App.startServer.bind(App));
     }
 
     constructor() {
@@ -48,7 +48,7 @@ class Main {
 
     bindStaticMiddleware() {
         console.log('Static middleware bound...');
-        this.StaticServer.addRoute('/assets/**path[/]');
+        this.StaticServer.addRoute('/assets/app/**path[/]', { pathToStatic: ['app', 'path'] });
         this.app.use(this.StaticServer.intercept);
         return Promise.resolve(true);
     }
@@ -72,9 +72,9 @@ class Main {
     }
 
     startServer() {
-        this.Server = http2.createSecureServer(Config.getCertConfig(), this.app.callback());
-        this.Server.listen(Config.getHTTPSConfig().port);
-        console.log(`Started on port ${Config.getHTTPSConfig().port}`);
+        this.Server = http.createServer(this.app.callback());
+        this.Server.listen(Config.getHTTPConfig().port, Config.getHTTPConfig().host);
+        console.log(`Started on port ${Config.getHTTPConfig().port}`);
     }
 
     toString() {

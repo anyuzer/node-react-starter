@@ -1,6 +1,6 @@
-import fs from 'fs';
-import { ArcRouter, ArcHash } from 'arc-lib';
-import path from 'path';
+const fs = require('fs');
+const { ArcRouter, ArcHash } = require('arc-lib');
+const path = require('path');
 
 class KoaStatic {
     constructor() {
@@ -14,25 +14,36 @@ class KoaStatic {
         this.rootDir = _rootDir;
     }
 
-    addRoute(_route) {
-        this.map[_route] = true;
+    addRoute(_route, _options) {
+        this.map[_route] = _options || true;
         this.Router.setMap(this.map);
+    }
+
+    _buildPathToStatic(_routeData, _pathToStaticArray) {
+        return _pathToStaticArray.reduce((_path, _routeKey) => {
+            const routeDecoded = decodeURIComponent(_routeData[_routeKey] || _routeKey);
+            return `${_path}/${routeDecoded}`;
+        }, "");
     }
 
     async intercept(_ctx, _next) {
         const routeData = this.Router.travel(_ctx.request.path);
         if (routeData.match) {
-            const fullPath = `${this.rootDir}/${routeData.path}`;
+            const pathToStatic = this._buildPathToStatic(routeData, routeData.match.pathToStatic);
+            const fullPath = `${this.rootDir}${pathToStatic}`;
             return new Promise((_resolve, _reject) => {
                 fs.access(fullPath, fs.constants.R_OK, (_err) => {
                     if (_err) {
-                        _resolve(_next());
+                        return _resolve(_next());
                     }
                     fs.stat(fullPath, (_suberr, _stats) => {
                         const etag = ArcHash.md5(`${_stats.size}${_stats.mtimeMs}`);
                         if (_ctx.request.headers['if-none-match'] === etag) {
                             _ctx.response.status = 304;
                             return _resolve();
+                        }
+                        if (routeData.match.maxAge) {
+                            _ctx.response.set('cache-control', `max-age=${routeData.match.maxAge}`);
                         }
                         _ctx.response.set('ETag', etag);
                         _ctx.response.type = path.extname(fullPath);
@@ -46,4 +57,4 @@ class KoaStatic {
     }
 }
 
-export default KoaStatic;
+module.exports = KoaStatic;

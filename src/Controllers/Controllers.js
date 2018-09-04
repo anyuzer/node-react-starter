@@ -20,7 +20,7 @@ class Controllers {
 
     getRouter() {
         // Here we will bind a loadPage endpoint for the UI side of our Application
-        this.BaseRouter.get('/', this.AppEndpoint.loadPage.bind(this.AppEndpoint));
+        this.BaseRouter.get('/**uris', this.AppEndpoint.loadPage.bind(this.AppEndpoint));
 
         // And as always, return a Router to the calling scope
         return this.BaseRouter;

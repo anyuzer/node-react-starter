@@ -54,4 +54,4 @@ class Config {
     }
 }
 
-export default new Config(process.env.NODE_ENV || '');
+export default new Config(process.env.APP_ENV || '');

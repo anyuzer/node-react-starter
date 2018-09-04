@@ -1,6 +1,6 @@
 import renderer from 'react-test-renderer';
 import React from 'react';
-import Page from '../../../Components/Page/index';
+import Page from '../../../Components/Pages/index';
 
 describe('Page Component', () => {
   const props = {

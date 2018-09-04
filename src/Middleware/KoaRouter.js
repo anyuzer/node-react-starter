@@ -1,4 +1,4 @@
-import { ArcRouter, ArcObject } from 'arc-lib';
+const { ArcRouter, ArcObject } = require('arc-lib');
 
 class KoaRouter {
     constructor() {
@@ -75,10 +75,11 @@ class KoaRouter {
         }
 
         if (routeData.match) {
-            await routeData.match(_ctx, _next);
+            _ctx.request.routeData = routeData;
+            await routeData.match(_ctx, _next, routeData);
         }
         await _next();
     }
 }
 
-export default KoaRouter;
+module.exports = KoaRouter;
