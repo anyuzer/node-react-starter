@@ -1,28 +1,5 @@
+const nodeExternals = require('webpack-node-externals');
 const path = require('path');
-const fs = require('fs');
-
-const nodeModules = {};
-
-fs.readdirSync('node_modules').filter((x) => { return ['.bin'].indexOf(x) === -1; }).forEach((mod) => { nodeModules[mod] = `commonjs ${mod}`; });
-
-const nodeModulesTransform = function (context, request, callback) {
-    // search for a '/' indicating a nested module
-    const slashIndex = request.indexOf('/');
-    let rootModuleName;
-
-    if (slashIndex === -1) {
-        rootModuleName = request;
-    } else {
-        rootModuleName = request.substr(0, slashIndex);
-    }
-
-    // Match for root modules that are in our node_modules
-    if (nodeModules.hasOwnProperty(rootModuleName)) {
-        callback(null, `commonjs ${request}`);
-    } else {
-        callback();
-    }
-};
 
 module.exports = {
     entry: {
@@ -31,18 +8,33 @@ module.exports = {
     target: 'node',
     output: {
         filename: 'server.bundle.js',
-        path: path.resolve(__dirname)
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: "/assets/"
     },
     module: {
         rules: [
+            { test: /\.(svg|ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani)(\?.*)?$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[hash:8].[ext]'
+                    }
+                }]
+            },
             {
                 test: /\.(js|jsx)$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'babel-loader'
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-react'],
+                        plugins: ['babel-plugin-styled-components']
+                    }
+                }
             }
         ]
     },
-    externals: nodeModulesTransform,
+    externals: nodeExternals(),
     mode: (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
     node: {
         __dirname: false,

@@ -1,6 +1,6 @@
 import KoaRouter from '../Middleware/KoaRouter';
 import AppEndpoint from './Endpoints/AppEndpoint';
-import AppServer from '../Components/AppServer';
+import Server from '../App/Server';
 
 /*
 An example of our top level controller. This controller is responsible for initializing and aggregating
@@ -12,10 +12,10 @@ class Controllers {
         this.BaseRouter = new KoaRouter();
 
         // We inject the Model into our AppServer (Which is the Isomorphic controller for our UI)
-        this.AppServer = new AppServer();
+        this.Server = new Server();
 
         // And our AppServer into our AppEndpoint (the routed endpoint that will call render from the AppServer on page load)
-        this.AppEndpoint = new AppEndpoint(this.AppServer);
+        this.AppEndpoint = new AppEndpoint(this.Server);
     }
 
     getRouter() {
