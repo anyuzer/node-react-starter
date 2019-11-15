@@ -48,7 +48,7 @@ class Main {
 
     bindStaticMiddleware() {
         console.log('Static middleware bound...');
-        this.StaticServer.addRoute('/assets/app/**path[/]', { pathToStatic: ['app', 'path'] });
+        this.StaticServer.addRoute('/assets/**path[/]', { pathToStatic: ['app', 'path'] });
         this.app.use(this.StaticServer.intercept);
         return Promise.resolve(true);
     }

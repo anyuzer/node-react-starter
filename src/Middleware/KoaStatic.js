@@ -31,6 +31,7 @@ class KoaStatic {
         if (routeData.match) {
             const pathToStatic = this._buildPathToStatic(routeData, routeData.match.pathToStatic);
             const fullPath = `${this.rootDir}${pathToStatic}`;
+            console.log(pathToStatic, fullPath);
             return new Promise((_resolve, _reject) => {
                 fs.access(fullPath, fs.constants.R_OK, (_err) => {
                     if (_err) {
