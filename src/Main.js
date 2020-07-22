@@ -1,7 +1,6 @@
 /* eslint no-console: 0 */
 /* Disable ESLint no-console as this file only runs on server side */
 import Koa from 'koa';
-import compress from 'koa-compress';
 
 import http from 'http';
 import Controllers from './Controllers/Controllers';
@@ -27,7 +26,6 @@ class Main {
 
     constructor() {
         this.app = new Koa();
-        this.app.use(compress());
         this.Router = new KoaRouter;
         this.StaticServer = new KoaStatic;
 
