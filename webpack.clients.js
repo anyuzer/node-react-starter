@@ -1,11 +1,13 @@
 const path = require('path');
-
-console.log(path.resolve('./node_modules/styled-components'));
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
     entry: {
         app: ['@babel/polyfill', './src/App/Client.js']
     },
+    plugins:  [
+        new NodePolyfillPlugin()
+    ],
     module: {
         rules: [
             { test: /\.(svg|ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani)(\?.*)?$/,
@@ -34,5 +36,8 @@ module.exports = {
         path: path.resolve(`${__dirname}/dist/app`),
         publicPath: "/assets/"
     },
-    mode: (process.env.NODE_ENV === 'development' ? 'development' : 'production')
+    mode: (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
+    watchOptions: {
+        ignored: /node_modules/,
+    }
 };

@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        server: ['@babel/polyfill', './index.js']
+        server: ['@babel/polyfill', './src/Main.js']
     },
     target: 'node',
     output: {

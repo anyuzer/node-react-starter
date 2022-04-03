@@ -1,7 +1,12 @@
+import chalk from 'chalk';
+import localConfig from './local';
 import developmentConfig from './development';
 import stagingConfig from './staging';
 import productionConfig from './production';
 
+/**
+ * @class Config;
+ */
 class Config {
     constructor(_environment) {
         this.setEnvironment(_environment);
@@ -9,7 +14,7 @@ class Config {
 
     // Public
     setEnvironment(_environment) {
-        this.environment = _environment.toLowerCase();
+        this.environment = _environment.toLowerCase() || 'production';
         this._setConfigObj(this._loadConfig(this.environment));
     }
 
@@ -21,20 +26,13 @@ class Config {
         return this.configObj.bodyParser;
     }
 
-    getCORSConfig() {
-        return this.configObj.cors;
-    }
-
     getHTTPConfig() {
         return this.configObj.http;
     }
 
-    getHTTPSConfig() {
-        return this.configObj.https;
-    }
-
-    getCertConfig() {
-        return this.configObj.tls;
+    reloadConfig(_environment) {
+        this.environment = _environment.toLowerCase();
+        this._setConfigObj(this._loadConfig(this.environment));
     }
 
     // Private
@@ -45,13 +43,16 @@ class Config {
     _loadConfig(_environment) {
         switch (_environment) {
             case 'development':
-                return developmentConfig;
+                console.log(chalk.greenBright.bold('Loading development config...'));
+                return localConfig || developmentConfig;
             case 'staging':
+                console.log(chalk.yellowBright.bold('Loading staging config...'));
                 return stagingConfig;
             default:
+                console.log(chalk.redBright.bold('Loading production config...'));
                 return productionConfig;
         }
     }
 }
 
-export default new Config(process.env.APP_ENV || '');
+export default new Config(process.env.NODE_ENV || '');

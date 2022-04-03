@@ -5,7 +5,8 @@ const path = require('path');
 class KoaStatic {
     constructor() {
         this.Router = new ArcRouter;
-        this.rootDir = global.DIST_PATH;
+        this.rootDir = path.resolve(`${__dirname}`);
+        console.log(this.rootDir);
         this.map = {};
         this.intercept = this.intercept.bind(this);
     }
@@ -31,11 +32,14 @@ class KoaStatic {
         if (routeData.match) {
             const pathToStatic = this._buildPathToStatic(routeData, routeData.match.pathToStatic);
             const fullPath = `${this.rootDir}${pathToStatic}`;
-            console.log(pathToStatic, fullPath);
+            //If you're not sure how the mapping works, uncomment this: console.log(pathToStatic, fullPath);
             return new Promise((_resolve, _reject) => {
                 fs.access(fullPath, fs.constants.R_OK, (_err) => {
                     if (_err) {
-                        return _resolve(_next());
+                        console.log(_err);
+                        _ctx.response.status = 404;
+                        _ctx.response.body = 'NOT FOUND';
+                        return _resolve();
                     }
                     fs.stat(fullPath, (_suberr, _stats) => {
                         const etag = ArcHash.md5(`${_stats.size}${_stats.mtimeMs}`);

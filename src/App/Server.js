@@ -1,45 +1,122 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from "styled-components";
-import { ArcRouter } from 'arc-lib';
+import {ArcHash, ArcRouter} from 'arc-lib';
 
-import Html from './Html';
-import Provider from './Provider';
-import Router from './Router';
+import Config from '../Config/Config';
+import Html from './Body/Html';
+import Provider from './Body/Provider';
+import Router from './Utils/Router';
+import MetaResolver from './Utils/MetaResolver'
 
 import routeMap from '../@data/routeMap.json';
 
+/**
+ *
+ * @class Server
+ */
 class Server {
     constructor() {
         this.Router = new ArcRouter(routeMap);
+        this.render = this.render.bind(this);
     }
 
-    /* eslint max-len: 0 */
-    async render(_ctx) {
-        try {
-            const [routeObj, pageData] = await this._initData(_ctx);
+    async render(_ctx, _forceRenderError) {
+        let routeData, pageData, userProfile;
 
-            const sheet = new ServerStyleSheet();
-            const body = renderToString(sheet.collectStyles(<Provider routeObj={routeObj} pageData={pageData} />));
-            const styles = sheet.getStyleTags();
-
-            _ctx.response.status = 200;
-            _ctx.response.body = Html({ body, styles, title: "Title", routeObj, pageData });
-        } catch (err) {
-            _ctx.response.status = 500;
-            _ctx.response.body = "Failed to render";
-            console.error(err);
-            throw err;
+        //1a. If something has gone critically wrong on the server side. Just skip everything and force render an error page.
+        if(_forceRenderError){
+            pageData = [];
+            routeData = this.Router.travel(_ctx.request.url);
+            routeData.match = "500";
+        } else {
+            //1b. If not, do our top level data resolution. People like doing this in React components. I do not.
+            console.time('(Server) Init Data');
+            [routeData, pageData, userProfile] = await this._initData(_ctx);
+            console.timeEnd('(Server) Init Data');
         }
+
+        //2. At this point, we have our routeData, our pageData, our userData if necessary, render our app tree.
+        console.time('(Server) Render');
+        const TagResolver = new MetaResolver(routeData);
+        const sheet = new ServerStyleSheet();
+        const body = renderToString(sheet.collectStyles(<Provider metaResolver={TagResolver} routeData={routeData} pageData={pageData} />));
+        const styles = sheet.getStyleTags();
+
+        const [title, ogTitle, ogType, ogUrl, ogImage, ogDescription] = await Promise.all([
+            TagResolver.getTitle(),
+            TagResolver.getOGTitle(),
+            TagResolver.getOGType(),
+            TagResolver.getOGUrl(),
+            TagResolver.getOGImage(),
+            TagResolver.getOGDescription()
+        ]);
+        console.timeEnd('(Server) Render');
+
+        //3. Ensure we have the right response status, as well as allow our page content to resolve anything it wants around our meta state. Inject it into our HTML.
+        const html = Html(
+            { body, styles, title, routeData, pageData, userProfile },
+            { ogTitle, ogType, ogUrl, ogImage, ogDescription},
+            Config.getEnvironment()
+        );
+
+        const etag = ArcHash.md5(html);
+        if (_ctx.request.headers['if-none-match'] === etag) {
+            console.log('Cached page...');
+            _ctx.response.status = 304;
+            return;
+        }
+
+        _ctx.response.set('ETag', etag);
+        _ctx.response.status = this._getResponseStatus(routeData);
+        _ctx.response.body = html;
     }
 
     async _initData(_ctx) {
-        let pageResolver = Router.reroute(decodeURI(_ctx.path));
-        [pageResolver] = await Promise.all([pageResolver]);
-        const [routeObj, pageData] = pageResolver;
-        routeObj.path = decodeURI(_ctx.path);
+        let userProfile = {};
+        let routeData, pageData = [];
+        try{
+            /*
+                //Authenticate our user here. This is generally a separate upstream call, which we do prior to calling other APIs and deciding the render tree.
+                userProfile = await UserGateway.checkUser();
 
-        return [routeObj, pageData];
+                //Assuming we got a user, we deserialize it globally
+                UserState.deserialize(userProfile);
+             */
+            [routeData, pageData] = await Router.reroute(decodeURI(_ctx.request.url));
+        }
+        catch(e) {
+            //Now, it's possible something goes wrong in our data tree. This is server side, prerender. Here we can modify our render target to be an error page.
+            routeData = this.Router.travel(_ctx.request.url); //Get the right route
+
+            //We would probably want to capture the error here and not swallow it.
+            console.log(e);
+
+            switch(e.message) {
+                case '401':
+                case '404':
+                    //Not found
+                    routeData.match = e.message;
+                    break;
+
+                default:
+                    routeData.match = '500';
+                    break;
+            }
+        }
+        return [routeData, pageData, userProfile];
+    }
+
+    _getResponseStatus(_routeData) {
+        switch(_routeData.match) {
+            case '404':
+            case '401':
+            case '500':
+                return +_routeData.match;
+
+            default:
+                return 200;
+        }
     }
 }
 

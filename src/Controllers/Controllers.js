@@ -1,28 +1,22 @@
 import KoaRouter from '../Middleware/KoaRouter';
-import AppEndpoint from './Endpoints/AppEndpoint';
 import Server from '../App/Server';
+import AppEndpoint from "./Endpoints/AppEndpoint";
 
 /*
-An example of our top level controller. This controller is responsible for initializing and aggregating
-the major route scopes and binding them without tightly coupling with the underlying routing.
-*/
+    Currently, this backend service only deals with SSR and delivering the app. So all routes are captured and passed into the rendering pipeline.
+    We can add a coupled BFF here to deliver specific viewModels to our routes though easily enough. These should be stateless (to ensure proper scaling),
+    but only requires adding a BFFEndpoint, and a BFFClient, and then capturing a specific route (ie. /bff/homepage) at which point we have a nicely
+    coupled bff.
+ */
 class Controllers {
     constructor() {
-        // Base Router
         this.BaseRouter = new KoaRouter();
-
-        // We inject the Model into our AppServer (Which is the Isomorphic controller for our UI)
-        this.Server = new Server();
-
-        // And our AppServer into our AppEndpoint (the routed endpoint that will call render from the AppServer on page load)
-        this.AppEndpoint = new AppEndpoint(this.Server);
+        this.AppEndpoint = new AppEndpoint(new Server());
     }
 
     getRouter() {
-        // Here we will bind a loadPage endpoint for the UI side of our Application
-        this.BaseRouter.get('/**uris', this.AppEndpoint.loadPage.bind(this.AppEndpoint));
-
-        // And as always, return a Router to the calling scope
+        //Route through our endpoint, which attempts our SSR
+        this.BaseRouter.get('/**uris', this.AppEndpoint.loadPage);
         return this.BaseRouter;
     }
 }
