@@ -1,4 +1,7 @@
 import React from 'react';
+import { withTheme } from "styled-components";
+
+import { UX, utils } from '@anyuzer/starter-ux-lib';
 
 class HomePage extends React.Component {
     constructor(_props) {
@@ -8,8 +11,12 @@ class HomePage extends React.Component {
     }
 
     render() {
-        return 'HiS???!x'; //ss
+        return (
+            <UX.Flex>
+                HOME PAGE
+            </UX.Flex>
+        )
     }
 }
 
-export default HomePage;
+export default withTheme(HomePage);

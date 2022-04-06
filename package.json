@@ -14,21 +14,24 @@
     "build-client-stg": "NODE_ENV=staging webpack --bail --config=\"webpack.clients.js\"",
     "build-server-stg": "NODE_ENV=staging webpack --bail --config=\"webpack.server.js\"",
     "start-stg": "NODE_ENV=staging node ./dist/server.bundle.js",
+
     "boot-dev": "npm run build-dev && npm run start-dev",
+    "watch-dev": "npm run build-dev && npm run start-dev-watch",
+
     "build-dev": "npm run build-server-dev && npm run build-client-dev",
+    "start-dev": "NODE_ENV=development node ./dist/server.bundle.js",
+    "start-dev-watch": "WATCH_CLIENT=1 NODE_ENV=development node ./dist/server.bundle.js",
     "build-client-dev": "NODE_ENV=development webpack --config=\"webpack.clients.js\"",
     "build-server-dev": "NODE_ENV=development webpack --config=\"webpack.server.js\"",
-    "start-dev": "NODE_ENV=development node ./dist/server.bundle.js",
-    "watch-dev": "npm run build-dev && npm run start-dev-watch",
-    "start-dev-watch": "WATCH_CLIENT=1 NODE_ENV=development node ./dist/server.bundle.js",
     "start-watch": "NODE_ENV=development webpack --watch --config=\"webpack.clients.js\"",
+
     "test": "jest --coverage",
     "jest-update-snapshots": "jest -u"
   },
   "author": "Ian Reid",
   "license": "ISC",
   "dependencies": {
-    "@anyuzer/starter-ux-lib": "^0.0.2",
+    "@anyuzer/starter-ux-lib": "^0.0.6",
     "@babel/polyfill": "7.12.1",
     "@koa/cors": "^3.3.0",
     "arc-lib": "^6.0.2",

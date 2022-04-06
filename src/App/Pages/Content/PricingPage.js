@@ -3,16 +3,20 @@ import { withTheme } from "styled-components";
 
 import { UX, utils } from '@anyuzer/starter-ux-lib';
 
-class ErrorPage extends React.Component {
+class PricingPage extends React.Component {
+    constructor(_props) {
+        super(_props);
+    }
+
     render() {
-        this.props.metaResolver.setTitle('[500]');
+        this.props.metaResolver.setTitle('[Pricing Page]');
         this.props.metaResolver.setOGFalse();
         return (
             <UX.Flex>
-                500. ERROR.
+                PRICING PAGE
             </UX.Flex>
         )
     }
 }
 
-export default withTheme(ErrorPage);
+export default withTheme(PricingPage);

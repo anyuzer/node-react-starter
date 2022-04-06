@@ -73,8 +73,8 @@ class MetaResolver {
 
     setTitle(_t1, _t2, _t3, _setOGTitle) {
         let title = _t1 || '';
-        title = title && _t2 ? `${title} | ${_t2}` : _t2;
-        title = title && _t3 ? `${title} - ${_t3}` : _t3;
+        title = title && _t2 ? `${title} | ${_t2}` : title;
+        title = title && _t3 ? `${title} - ${_t3}` : title;
 
         if(title !== this.title) {
             this.title = title;

@@ -25,7 +25,7 @@ class AppEndpoint {
             //     errorStack: e.stack,
             //     componentStack: 'SSR'
             // };
-
+            console.log('Caught an error in our SSR tree. Forcing a 500.')
             await this.AppRootServer.render(_ctx, true);
         }
     }

@@ -1,6 +1,9 @@
 import React from 'react';
 
 import HomePage from "./Content/HomePage";
+import ProductsPage from "./Content/ProductsPage";
+import PricingPage from "./Content/PricingPage";
+
 import NotFoundPage from "./Content/NotFoundPage";
 import ErrorPage from "./Content/ErrorPage";
 
@@ -19,6 +22,9 @@ class Pages extends React.Component {
         try{
             switch (_page) {
                 case 'homepage': return <HomePage {...this.props} />;
+                case 'products': return <ProductsPage {...this.props} />;
+                case 'pricing': return <PricingPage {...this.props} />;
+                case '500': return <ErrorPage {...this.props} />;
                 default:
                     // Should 404
                     return <NotFoundPage {...this.props} />;

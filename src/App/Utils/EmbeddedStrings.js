@@ -11,6 +11,18 @@ class EmbeddedStrings {
     static PAGE_ERROR() {
         return `Something when horribly wrong. We've recorded the issue and are looking into it!`
     }
+
+    static SHELL_FOOTER() {
+        return `This is a footer.`;
+    }
+
+    static NAV_PRODUCTS() {
+        return 'products'
+    }
+
+    static NAV_PRICING() {
+        return 'pricing';
+    }
 }
 
 export default EmbeddedStrings;

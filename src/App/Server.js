@@ -40,8 +40,10 @@ class Server {
         console.time('(Server) Render');
         const TagResolver = new MetaResolver(routeData);
         const sheet = new ServerStyleSheet();
+        console.time('(Server) SubRender');
         const body = renderToString(sheet.collectStyles(<Provider metaResolver={TagResolver} routeData={routeData} pageData={pageData} />));
         const styles = sheet.getStyleTags();
+        console.timeEnd('(Server) SubRender');
 
         const [title, ogTitle, ogType, ogUrl, ogImage, ogDescription] = await Promise.all([
             TagResolver.getTitle(),

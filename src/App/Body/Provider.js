@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from "styled-components";
-import ExampleTheme from '@anyuzer/starter-ux-lib/dist/themes/ExampleTheme';
+import { themes } from '@anyuzer/starter-ux-lib';
 
 import App from './App';
 
@@ -9,8 +9,8 @@ import App from './App';
     If you are using the starter-ux-lib, you'll update this with your appropriate theme.
  */
 const Provider = props => (
-    <ThemeProvider theme={ExampleTheme}>
-        <ExampleTheme.globalStyle />
+    <ThemeProvider theme={themes.ExampleLight}>
+        <themes.ExampleLight.globalStyle />
         <App {...props} />
     </ThemeProvider>
 );

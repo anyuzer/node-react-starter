@@ -31,7 +31,7 @@ class ErrorBoundary extends React.Component {
     static getDerivedStateFromError(error) {
         return {
             hasError: true,
-            type: error.message() === '404' ? '404' : '500'
+            type: error.message === '404' ? '404' : '500'
         };
     }
 

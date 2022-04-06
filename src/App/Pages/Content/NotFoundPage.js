@@ -1,8 +1,18 @@
 import React from 'react';
+import { withTheme } from "styled-components";
 
-const NotFoundPage = (props) => {
-    return <div><pre>{JSON.stringify(props, null, 2)}</pre></div>;
-    // return <div>Not Found</div>;
-};
+import { UX, utils } from '@anyuzer/starter-ux-lib';
 
-export default NotFoundPage;
+class NotFoundPage extends React.Component {
+    render() {
+        this.props.metaResolver.setTitle('[404]');
+        this.props.metaResolver.setOGFalse();
+        return (
+            <UX.Flex>
+                404. NOT FOUND
+            </UX.Flex>
+        )
+    }
+}
+
+export default withTheme(NotFoundPage);

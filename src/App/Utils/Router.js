@@ -34,6 +34,14 @@ class Router {
                 pageResolver = await this._loadHomepage(_uri, newRouteObj);
                 break;
 
+            case 'products':
+                pageResolver = await this._loadProducts(_uri, newRouteObj);
+                break;
+
+            case 'pricing':
+                pageResolver = await this._loadPricing(_uri, newRouteObj);
+                break;
+
             default:
                 pageResolver = [newRouteObj, false];
                 break;
@@ -46,8 +54,22 @@ class Router {
         return pageResolver;
     }
 
+    //Load a singular viewModel at the top level, rerender.
     async _loadHomepage(_uri, _newRouteObj) {
-        //const viewModel = await ExampleClient.search('canada');
+        return [
+            _newRouteObj,
+            []
+        ]
+    }
+
+    async _loadProducts(_uri, _newRouteObj) {
+        return [
+            _newRouteObj,
+            []
+        ]
+    }
+
+    async _loadPricing(_uri, _newRouteObj) {
         return [
             _newRouteObj,
             []

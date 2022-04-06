@@ -3,16 +3,18 @@ import { withTheme } from "styled-components";
 
 import { UX, utils } from '@anyuzer/starter-ux-lib';
 
-class ErrorPage extends React.Component {
+class ProductsPage extends React.Component {
     render() {
-        this.props.metaResolver.setTitle('[500]');
+        this.props.metaResolver.setTitle('[Products Page]');
         this.props.metaResolver.setOGFalse();
+
+        throw new Error('An unknown natural error.')
         return (
             <UX.Flex>
-                500. ERROR.
+                PRODUCTS PAGE
             </UX.Flex>
         )
     }
 }
 
-export default withTheme(ErrorPage);
+export default withTheme(ProductsPage);

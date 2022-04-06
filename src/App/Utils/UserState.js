@@ -6,10 +6,19 @@ class UserState {
     constructor() {
         ArcEvents.mixin(this);
         this.userId = "";
+        this.userTheme = 'light';
     }
 
     logout() {
         this.userId = "";
+    }
+
+    getTheme() {
+        return this.userTheme;
+    }
+
+    setTheme() {
+
     }
 
     deserialize(_userData) {
